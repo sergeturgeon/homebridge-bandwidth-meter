@@ -1,6 +1,6 @@
 {
   "name": "homebridge-bandwidth-meter",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "description": "Homebridge Bandwidth Meter (uses SNMP and IFTTT)",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
