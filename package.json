@@ -18,5 +18,9 @@
   "dependencies": {
     "snmp-native": "1.1.0",
     "iftttmaker": "1.2.1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/sergeturgeon/homebridge-bandwidth-meter"
   }
 }
