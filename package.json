@@ -1,0 +1,22 @@
+{
+  "name": "homebridge-bandwidth-meter",
+  "version": "1.0.0",
+  "description": "Homebridge Bandwidth Meter (uses SNMP and IFTTT)",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "echo \"Error: configure and run homebridge to start\" && exit 1"
+  },
+  "author": "serge.turgeon@icloud.com",
+  "license": "ISC",
+  "keywords": [
+    "homebridge-plugin"
+  ],
+  "engines": {
+    "homebridge": ">=0.4.9",
+    "node": ">=4.2.0"
+  },
+  "dependencies": {
+    "snmp-native": "1.1.0",
+    "iftttmaker": "1.2.1"
+  }
+}
