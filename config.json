@@ -15,7 +15,7 @@
       "snmp_community": "Public",
       "snmp_oid": ".1.3.6.1.2.1.31.1.1.1.10.2",
       "snmp_query_interval_in_sec": 3,
-      "ifttt_api_key": "4Xzyso6U2pdP28_Lo4Pmhix0Hk0",
+      "ifttt_api_key": "xxxxxxxx",
       "ifttt_event": "homebridge",
       "ifttt_threshold_mbps": 100, 
       "ifttt_maximum_notification_interval_in_sec": 300 
@@ -28,10 +28,10 @@
       "snmp_community": "Public",
       "snmp_oid": ".1.3.6.1.2.1.31.1.1.1.6.2",
       "snmp_query_interval_in_sec": 3,
-      "ifttt_api_key": "Xzyso6U2pdP28_Lo4Pmhix0Hk0",
+      "ifttt_api_key": "xxxxxxxx",
       "ifttt_event": "homebridge",
       "ifttt_threshold_mbps": 9, 
-      "ifttt_maximum_notification_interval_in_sec": 120 
+      "ifttt_maximum_notification_interval_in_sec": 300 
     }
   ]
 }

@@ -35,9 +35,9 @@ function BandwidthMeterAccessory(log, config)
   this.log("ifttt threshold mbps " + this.iftttThresholdMbps);
   this.log("ifttt maximum notification interval in sec " + this.iftttMaximumNotificationIntervalInSec);
 
-  this.lastOctets0 = 0; 
-  this.lastOctets1 = 0; 
-  this.lastOctets2 = 0; 
+  this.lastOctets0 = 0;
+  this.lastOctets1 = 0;
+  this.lastOctets2 = 0;
   this.loopCounter = 0;
   this.throughputInMbps = 0;
   this.lastUpdate = 0;
@@ -48,7 +48,6 @@ function BandwidthMeterAccessory(log, config)
   {
     this.log('SendNotificattionToIFTTT ' + Number(this.throughputInMbps).toFixed(1) + ' Mbps');
 
-    //var apiKey = ;
     var IFTTTMaker = require('iftttmaker')(this.iftttApiKey);
 
     var request = {
@@ -70,7 +69,7 @@ function BandwidthMeterAccessory(log, config)
   this.UpdateBandwidthFromSnmp = function() {
      var snmp = require('snmp-native');
      var session = new snmp.Session({ host: this.snmpIpAddress, community: this.snmpCommunity });
-     
+
      var that = this;
      session.get({ oid: that.snmpOid }, function (error, varbinds) {
         if (error) {
@@ -80,7 +79,7 @@ function BandwidthMeterAccessory(log, config)
 
            // Calculated moving overage of last intervals
            var octetPerSec = (counter - that.lastOctets2) / (that.snmpQueryIntervalInSec * 3);
-           
+
            // update counters for last intervals
            that.lastOctets2 = that.lastOctets1;
            that.lastOctets1 = that.lastOctets0;
@@ -88,7 +87,7 @@ function BandwidthMeterAccessory(log, config)
 
            // Don't make any updates until after 3rd interval so we have valid average
            that.loopCounter++;
-           if (that.loopCounter > 3) { 
+           if (that.loopCounter > 3) {
              that.throughputInMbps = (octetPerSec * 8) / 1000000;
 
              //console.log(that.name + ' Bandwidth ' + Number(that.throughputInMbps).toFixed(3) + ' Mbps' + ' high watermark ' + Number(that.highWatermark).toFixed(3));
@@ -115,7 +114,7 @@ function BandwidthMeterAccessory(log, config)
   this.UpdateHomebridge = function() {
     if (this.service) {
       var update = Math.round(this.throughputInMbps);
-      
+
       if (update != this.lastUpdate) {
         this.service.setCharacteristic(this.sensor, update);
         this.lastUpdate = update;
@@ -152,23 +151,25 @@ BandwidthMeterAccessory.prototype =
     {
     var informationService = new Service.AccessoryInformation();
 
+    var pkginfo = require('pkginfo')(module);
+
     informationService
-      .setCharacteristic(Characteristic.Manufacturer, "Serge Turgeon")
+      .setCharacteristic(Characteristic.Manufacturer, module.exports.author.name)
       .setCharacteristic(Characteristic.Model, this.accessoryLabel)
-      .setCharacteristic(Characteristic.SerialNumber, 'Version 1.0.0');
+      .setCharacteristic(Characteristic.SerialNumber, 'Version ' + module.exports.version);
 
     this.service = new Service.TemperatureSensor(this.name);
 
     this.sensor = Characteristic.CurrentTemperature;
 
-    this.service 
+    this.service
       .getCharacteristic(this.sensor)
       .on('get', this.getState.bind(this));
 
     this.service
       .getCharacteristic(this.sensor)
       .setProps({minValue: 0});
-        
+
     this.service
       .getCharacteristic(this.sensor)
       .setProps({maxValue: 1000});
@@ -176,5 +177,3 @@ BandwidthMeterAccessory.prototype =
     return [informationService, this.service];
     }
 };
-
-
