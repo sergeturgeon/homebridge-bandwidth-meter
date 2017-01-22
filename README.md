@@ -11,8 +11,8 @@ The IP address of the router. You can use a CLI utility such as "snmpget" to que
 ###"snmp_community"
 The SNMP community as configured on your router. Typical SNMP server defaults are "Private" or "Public". 
 ###"snmp_oid"
-The SNMP OID specifies the counter and port to access. In the example config.json, the OIDs are for 64-bit RX/TX counters for the eth1 port of my router. For example, ".1.3.6.1.2.1.31.1.1.1.10.2" is split into a counter part and a port part where 
-ifHCOutOctets = ".1.3.6.1.2.1.31.1.1.1.10", ifHCInOctets = ".1.3.6.1.2.1.31.1.1.1.6" and eth1 = ".2".
+The SNMP OID specifies the counter and port to access. In the example config.json, the OIDs are for 64-bit RX/TX counters for the eth1 port of my router. For example, ".1.3.6.1.2.1.31.1.1.1.10.3" is split into a counter part and a port part where 
+ifHCOutOctets = ".1.3.6.1.2.1.31.1.1.1.10", ifHCInOctets = ".1.3.6.1.2.1.31.1.1.1.6" and eth1 = ".3".
 
 64-bit counters are only supported for SNMPv2c or SNMPv3. If your router only supports SNMPv1 or doesn't support 64-bit counters you can use 32-bit counters. Add the port as appropriate.
 ifInOctets = ".1.3.6.1.2.1.2.2.1.10"
