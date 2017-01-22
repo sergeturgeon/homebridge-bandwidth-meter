@@ -9,7 +9,7 @@
   "author": {
     "name": "Serge Turgeon",
     "email": "serge.turgeon@icloud.com"
-  }
+  },
   "license": "ISC",
   "keywords": [
     "homebridge-plugin"
