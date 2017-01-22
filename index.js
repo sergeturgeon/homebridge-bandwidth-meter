@@ -98,11 +98,13 @@ function BandwidthMeterAccessory(log, config)
              }
 
              // Send notification via IFFTT if threshold reached
-             if (that.iftttUpdateDelay == 0 &&
-                 (that.throughputInMbps > that.iftttThresholdMbps)) {
-               that.SendNotificationToIFTTT();
-               that.iftttUpdateDelay  = 1;
-               setTimeout(function() {that.iftttUpdateDelay = 0; }, that.iftttMaximumNotificationIntervalInSec * 1000);
+             if (that.iftttApiKey) {
+               if (that.iftttUpdateDelay == 0 &&
+                   (that.throughputInMbps > that.iftttThresholdMbps)) {
+                 that.SendNotificationToIFTTT();
+                 that.iftttUpdateDelay  = 1;
+                 setTimeout(function() {that.iftttUpdateDelay = 0; }, that.iftttMaximumNotificationIntervalInSec * 1000);
+               }
              }
            }
         }
