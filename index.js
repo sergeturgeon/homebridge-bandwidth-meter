@@ -16,6 +16,7 @@ function BandwidthMeterAccessory(log, config)
   this.bridgeUpdateIntervalInSec = config['bridge_update_interval_in_sec'];
 
   this.movingAverageIntervals = config['moving_average_intervals'];
+
   // Valid moving average intervals range is 1 to 10
   if (!this.movingAverageIntervals ||
       this.movingAverageIntervals < 1 ||
