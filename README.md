@@ -5,6 +5,9 @@ The Homebridge Bandwidth Meter is used to monitor the receive and transmit port 
 ## Bridge configuration
 ###"bridge_update_interval_in_sec"
 This value specifies how often bandwdith updates are pushed to homebridge. This allows real-time updates while viewing the Bandwidth Meter in a HomeKit application. 
+## Moving Average Intervals
+###"moving_average_intervals"
+This value specifies the number of SNMP query intervals used in the calculation of the moving average. A larger number of intervals provides a smoother average. The valid range is from 1 to 10, otherwise the default value of 3 is used.
 ## SNMP Configuration
 ###"snmp_ip_address"
 The IP address of the router. You can use a CLI utility such as "snmpget" to query your router and determine if it is configured for SNMP. 
@@ -21,7 +24,7 @@ ifOutOctets = ".1.3.6.1.2.1.2.2.1.16"
 The interval in seconds at which the SNMP router will be queried for its rx/tx port counters. 
 ##IFTTT Configuration
 ###"ifttt_api_key"
-Your IFTTT API key. Use the default invalid key if you do not which to receive notifications.
+Your IFTTT API key. Set the key to empty if you do not which to receive notifications.
 ###"ifttt_event"
 The IFTTT Maker Event corresponding to this notification. The "Notification" box should include {Value1}{Value2}{Value3}{OccurredAt}.
 ###"ifttt_threshold_mbps"
