@@ -31,10 +31,10 @@ The interval in seconds at which the SNMP router will be queried for its rx/tx p
 ## IFTTT Configuration
 
 ### "ifttt_api_key"
-Your IFTTT API key. Set the key to empty if you do not which to receive notifications.
+Your IFTTT API key. Set the key to empty if you do not want to receive notifications.
 
 ### "ifttt_event"
-The IFTTT Maker Event corresponding to this notification. The "Notification" box should include {Value1}{Value2}{Value3}{OccurredAt}.
+The IFTTT Maker Event corresponding to this notification. The "Notification" box should include the ingredients {Value1}{Value2}{Value3}{OccurredAt}.
 
 ### "ifttt_threshold_mbps"
 The bandwidth threshold in Mbps which will trigger a notification.

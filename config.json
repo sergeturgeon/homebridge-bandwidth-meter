@@ -10,7 +10,7 @@
     {
       "accessory": "BandwidthMeter",
       "name": "Rx Mbps",
-      "bridge_update_interval_in_sec": 3,
+      "bridge_update_interval_in_sec": 5,
       "moving_average_intervals": 3,
       "snmp_ip_address": "192.168.1.1",
       "snmp_community": "Public",
@@ -24,7 +24,7 @@
     {
       "accessory": "BandwidthMeter",
       "name": "Tx Mbps",
-      "bridge_update_interval_in_sec": 3,
+      "bridge_update_interval_in_sec": 5,
       "moving_average_intervals": 3,
       "snmp_ip_address": "192.168.1.1",
       "snmp_community": "Public",

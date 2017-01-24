@@ -1,5 +1,6 @@
 var Service;
 var Characteristic;
+var snmp = require('snmp-native');
 
 module.exports = function (homebridge)
 {
@@ -56,6 +57,8 @@ function BandwidthMeterAccessory(log, config)
   this.highWatermark = 0;
   this.iftttUpdateDelay = 0;
 
+  this.session = new snmp.Session({ host: this.snmpIpAddress, community: this.snmpCommunity });
+
   this.SendNotificationToIFTTT = function()
   {
     this.log('SendNotificattionToIFTTT ' + Number(this.throughputInMbps).toFixed(1) + ' Mbps');
@@ -79,13 +82,11 @@ function BandwidthMeterAccessory(log, config)
   }
 
   this.UpdateBandwidthFromSnmp = function() {
-     var snmp = require('snmp-native');
-     var session = new snmp.Session({ host: this.snmpIpAddress, community: this.snmpCommunity });
-
      var that = this;
-     session.get({ oid: that.snmpOid }, function (error, varbinds) {
+
+     this.session.get({ oid: that.snmpOid }, function (error, varbinds) {
         if (error) {
-          console.log('Fail : cant get snmpOid ' + that.snmpOid);
+          this.log('Fail : cant get snmpOid ' + that.snmpOid);
         } else {
            var counter = varbinds[0].value;
 
@@ -106,7 +107,7 @@ function BandwidthMeterAccessory(log, config)
            if (that.loopCounter > that.movingAverageIntervals) {
              that.throughputInMbps = (octetPerSec * 8) / 1000000;
 
-             //console.log(that.name + ' Bandwidth ' + Number(that.throughputInMbps).toFixed(3) + ' Mbps' + ' high watermark ' + Number(that.highWatermark).toFixed(3));
+             //that.log('loop ' + that.loopCounter + ' ' + that.name + ' Bandwidth ' + Number(that.throughputInMbps).toFixed(3) + ' Mbps' + ' high watermark ' + Number(that.highWatermark).toFixed(3));
 
              // Keep highwater mark - future functionality
              if (that.throughputInMbps > that.highWatermark) {
@@ -126,47 +127,43 @@ function BandwidthMeterAccessory(log, config)
         }
      });
 
-     setTimeout(function() {that.UpdateBandwidthFromSnmp(); }, this.snmpQueryIntervalInSec * 1000);
+     setTimeout(function() { that.UpdateBandwidthFromSnmp(); }, this.snmpQueryIntervalInSec * 1000);
   }
 
   this.UpdateHomebridge = function() {
-    if (this.service) {
-      var update = Math.round(this.throughputInMbps);
-
-      if (update != this.lastUpdate) {
-        this.service.setCharacteristic(this.sensor, update);
-        this.lastUpdate = update;
-      }
+    var update = Math.round(this.throughputInMbps);
+    //this.log('loopCounter ' + this.loopCounter + ' update ' + update + ' lastUpdate ' + this.lastUpdate);
+    if (update != this.lastUpdate) {
+      this.service.setCharacteristic(this.sensor, update);
+      //this.log('setCharacteristic ' + update);
+      this.lastUpdate = update;
     }
 
     var that = this;
     setTimeout(function() {that.UpdateHomebridge(); }, this.bridgeUpdateIntervalInSec * 1000);
   };
-
-  /* Polling of snmp device to get bandwidth value */
-  this.UpdateBandwidthFromSnmp();
-
-  /* Update of bandwidth value to homebridge */
-  this.UpdateHomebridge();
 }
 
 
 BandwidthMeterAccessory.prototype =
 {
   getState: function (callback)
-    {
-      //this.log('getState '  + Math.round(this.throughputInMbps) +  ' Mbps');
-      callback(null, Math.round(this.throughputInMbps));
-    },
+  {
+    var update = Math.round(this.throughputInMbps);
+    this.service.setCharacteristic(this.sensor, update);
+    this.lastUpdate = update;
+    //this.log('getState '  + update +  ' Mbps');
+    callback(null, update);
+  },
 
   identify: function (callback)
-    {
+  {
     this.log("Identify requested!");
     callback();
-    },
+  },
 
   getServices: function ()
-    {
+  {
     var informationService = new Service.AccessoryInformation();
 
     var pkginfo = require('pkginfo')(module);
@@ -192,6 +189,12 @@ BandwidthMeterAccessory.prototype =
       .getCharacteristic(this.sensor)
       .setProps({maxValue: 1000});
 
+    /* Polling of snmp device to get bandwidth value */
+    this.UpdateBandwidthFromSnmp();
+
+    /* Update of bandwidth value to homebridge */
+    this.UpdateHomebridge();
+
     return [informationService, this.service];
-    }
+  }
 };
