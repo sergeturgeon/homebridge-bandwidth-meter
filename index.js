@@ -35,6 +35,15 @@ function BandwidthMeterAccessory(log, config)
   this.iftttThresholdMbps = config['ifttt_threshold_mbps'];
   this.iftttMaximumNotificationIntervalInSec = config['ifttt_maximum_notification_interval_in_sec'];
 
+  this.useFahrenheitConversion = config['locale_uses_fahrenheit'];
+  if (this.useFahrenheitConversion === undefined) {
+    this.useFahrenheitConversion = false;
+  }
+  this.verbose = config['verbose'];
+  if (this.verbose === undefined) {
+    this.verbose = false;
+  }
+
   this.log("bridge update interval in sec " + this.bridgeUpdateIntervalInSec);
   this.log("moving average intervals " + this.movingAverageIntervals);
   this.log("snmp ip address " + this.snmpIpAddress);
@@ -45,6 +54,7 @@ function BandwidthMeterAccessory(log, config)
   this.log("ifttt event " + this.iftttEvent);
   this.log("ifttt threshold mbps " + this.iftttThresholdMbps);
   this.log("ifttt maximum notification interval in sec " + this.iftttMaximumNotificationIntervalInSec);
+  this.log("locale uses fahrenheit (use conversion) " + this.useFahrenheitConversion)
 
   this.lastOctets = [];
   for (var interval = 0; interval < this.movingAverageIntervals; interval++) {
@@ -86,7 +96,7 @@ function BandwidthMeterAccessory(log, config)
 
      this.session.get({ oid: that.snmpOid }, function (error, varbinds) {
         if (error) {
-          this.log('Fail : cant get snmpOid ' + that.snmpOid);
+          that.log('Fail : cant get snmpOid ' + that.snmpOid);
         } else {
            var counter = varbinds[0].value;
 
@@ -107,7 +117,9 @@ function BandwidthMeterAccessory(log, config)
            if (that.loopCounter > that.movingAverageIntervals) {
              that.throughputInMbps = (octetPerSec * 8) / 1000000;
 
-             //that.log('loop ' + that.loopCounter + ' ' + that.name + ' Bandwidth ' + Number(that.throughputInMbps).toFixed(3) + ' Mbps' + ' high watermark ' + Number(that.highWatermark).toFixed(3));
+             if (that.verbose) {
+               that.log('loop ' + that.loopCounter + ' ' + that.name + ' Bandwidth ' + Number(that.throughputInMbps).toFixed(3) + ' Mbps' + ' high watermark ' + Number(that.highWatermark).toFixed(3));
+             }
 
              // Keep highwater mark - future functionality
              if (that.throughputInMbps > that.highWatermark) {
@@ -132,10 +144,17 @@ function BandwidthMeterAccessory(log, config)
 
   this.UpdateHomebridge = function() {
     var update = Math.round(this.throughputInMbps);
-    //this.log('loopCounter ' + this.loopCounter + ' update ' + update + ' lastUpdate ' + this.lastUpdate);
+    if (this.verbose) {
+      this.log('loopCounter ' + this.loopCounter + ' update ' + update + ' lastUpdate ' + this.lastUpdate);
+    }
+    if (this.useFahrenheitConversion) {
+      update = (update-32)*5/9;
+    }
     if (update != this.lastUpdate) {
       this.service.setCharacteristic(this.sensor, update);
-      //this.log('setCharacteristic ' + update);
+      if (this.verbose) {
+        this.log('setCharacteristic ' + update);
+      }
       this.lastUpdate = update;
     }
 
@@ -152,7 +171,9 @@ BandwidthMeterAccessory.prototype =
     var update = Math.round(this.throughputInMbps);
     this.service.setCharacteristic(this.sensor, update);
     this.lastUpdate = update;
-    //this.log('getState '  + update +  ' Mbps');
+    if (this.verbose) {
+      this.log('getState '  + update +  ' Mbps');
+    }
     callback(null, update);
   },
 
@@ -181,13 +202,21 @@ BandwidthMeterAccessory.prototype =
       .getCharacteristic(this.sensor)
       .on('get', this.getState.bind(this));
 
+    var minValue = 0;
+    if (this.useFahrenheitConversion) {
+      minValue = -18;
+    }
     this.service
       .getCharacteristic(this.sensor)
-      .setProps({minValue: 0});
+      .setProps({minValue: minValue});
 
+    var maxValue = 1000;
+    if (this.useFahrenheitConversion) {
+      maxValue = 538;
+    }
     this.service
       .getCharacteristic(this.sensor)
-      .setProps({maxValue: 1000});
+      .setProps({maxValue: maxValue});
 
     /* Polling of snmp device to get bandwidth value */
     this.UpdateBandwidthFromSnmp();
