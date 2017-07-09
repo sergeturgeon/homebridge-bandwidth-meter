@@ -18,8 +18,10 @@
       "snmp_query_interval_in_sec": 3,
       "ifttt_api_key": "xxxxxxxx",
       "ifttt_event": "homebridge",
-      "ifttt_threshold_mbps": 100, 
-      "ifttt_maximum_notification_interval_in_sec": 300 
+      "ifttt_threshold_mbps": 100,
+      "ifttt_maximum_notification_interval_in_sec": 300,
+      "locale_uses_fahrenheit": false,
+      "verbose": false,
     },
     {
       "accessory": "BandwidthMeter",
@@ -32,8 +34,10 @@
       "snmp_query_interval_in_sec": 3,
       "ifttt_api_key": "xxxxxxxx",
       "ifttt_event": "homebridge",
-      "ifttt_threshold_mbps": 9, 
-      "ifttt_maximum_notification_interval_in_sec": 300 
+      "ifttt_threshold_mbps": 9,
+      "ifttt_maximum_notification_interval_in_sec": 300,
+      "locale_uses_fahrenheit": false,
+      "verbose": false,
     }
   ]
 }
